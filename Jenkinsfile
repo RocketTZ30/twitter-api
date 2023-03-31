@@ -22,7 +22,17 @@ node {
 			} 
 		}
 	}
-
+	stage ('Quality check') {
+		withSonarQubeEnv('Sonar') {
+			withMaven(maven: 'maven') {
+				if(isUnix()){
+					sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=martial_jenkins-demo"
+				} else {
+					bat "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=martial_jenkins-demo"
+				}
+			}
+		}
+	}
 	stage('Package') {
 		withMaven(maven: 'maven') {
 			if(isUnix()) {
